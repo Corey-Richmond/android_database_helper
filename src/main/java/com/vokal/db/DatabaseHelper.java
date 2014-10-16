@@ -243,7 +243,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
             // continue
         }
 
-	if (creator == null) {
+	    if (creator == null) {
             creator = getTableCreatorFromHelper(aModelClass);
         }
 
