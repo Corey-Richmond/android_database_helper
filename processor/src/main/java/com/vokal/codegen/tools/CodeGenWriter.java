@@ -126,7 +126,7 @@ public class CodeGenWriter {
 
     private String emitPopulateContentValue(Collection<AnnotatedField> annotatedFields) {
         StringBuilder builder = new StringBuilder();
-        builder.append("\t@Override\n\tpublic void populateContentValues(ContentValues aValues) {\n\t\tif (m"  + mEnclosingClass.getClassName() + ".hasId()) aValues.put(_ID, m"+ mEnclosingClass.getClassName() +".getId());\n");
+        builder.append("\t@Override\n\tpublic void pospulateContentValues(ContentValues aValues) {\n\t\tif (m"  + mEnclosingClass.getClassName() + ".hasId()) aValues.put(_ID, m"+ mEnclosingClass.getClassName() +".getId());\n");
         for (AnnotatedField annotatedField : annotatedFields) {
             builder.append(emitSetters(annotatedField));
         }
