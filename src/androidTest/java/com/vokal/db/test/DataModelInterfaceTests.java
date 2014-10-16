@@ -171,7 +171,7 @@ public class DataModelInterfaceTests extends ProviderTestCase2<SimpleContentProv
         extendedTwo.save(mContext);
 
         mCursor = getMockContentResolver().query(DatabaseHelper.getContentUri(TestInterface.class),null,null,null,null);
-        ObjectCursor<TestInterface> cursor = new ObjectCursor<TestInterface>(mCursor, TestInterface.CURSOR_CREATOR);
+        ObjectCursor<TestInterface> cursor = new ObjectCursor<>(mCursor, TestInterface.CURSOR_CREATOR);
         if (cursor.moveToFirst()) {
             TestInterface m = cursor.getModel();
             assertEquals(false, m.isBoolean());

@@ -77,9 +77,28 @@ public class CodeGenWriter {
         builder.append("\tpublic static final SQLiteTable.TableCreator TABLE_CREATOR = new SQLiteTable.TableCreator() {\n" +
                        "\t\t@Override\n" +
                        "\t\tpublic SQLiteTable buildTableSchema(SQLiteTable.Builder aBuilder) {\n\t\t\taBuilder\n");
-        for (AnnotatedField annotatedField : annotatedFields) {
-            builder.append(emitTableBuilder(annotatedField, (annotatedUniqueFields != null)
-                                                                && annotatedUniqueFields.contains(annotatedField)));
+
+        int size;
+        if ((annotatedUniqueFields != null) && (size = annotatedUniqueFields.size()) > 1) {
+            for (AnnotatedField annotatedField : annotatedFields) {
+                builder.append(emitTableBuilder(annotatedField, false));
+            }
+            builder.append("\t\t\t.unique(");
+            int index = 0;
+            for (AnnotatedField annotatedUniqueField : annotatedUniqueFields) {
+                builder.append( annotatedUniqueField.getName().toUpperCase());
+                if (index == (size-1)) {
+                    builder.append( ")" );
+                } else {
+                    builder.append( ", " );
+                }
+                ++index;
+            }
+        } else {
+            for (AnnotatedField annotatedField : annotatedFields) {
+                builder.append(emitTableBuilder(annotatedField, (annotatedUniqueFields != null)
+                        && annotatedUniqueFields.contains(annotatedField)));
+            }
         }
         builder.append("\t\t\t;\n\t\t\treturn aBuilder.build();\n\t\t}\n\n");
         builder.append("\t\t@Override\n" +
