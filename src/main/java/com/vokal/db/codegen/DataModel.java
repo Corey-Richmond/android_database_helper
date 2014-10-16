@@ -2,6 +2,7 @@ package com.vokal.db.codegen;
 
 
 import android.content.ContentValues;
+import android.os.Parcel;
 import android.util.Log;
 
 import com.vokal.db.AbstractDataModel;
@@ -21,6 +22,8 @@ public class DataModel extends AbstractDataModel implements Model {
             e.printStackTrace();
         }
     }
+
+    protected DataModel(Parcel aSource) { super(aSource);}
 
     @Override
     public void populateContentValues(ContentValues contentValues) {

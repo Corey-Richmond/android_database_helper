@@ -8,13 +8,11 @@ import android.os.Parcel;
 import android.test.ProviderTestCase2;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.vokal.db.*;
 import com.vokal.db.test.models.*;
 import com.vokal.db.util.ObjectCursor;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvider> {
 
@@ -33,23 +31,23 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
 
     public void testInsert() {
         ExtendedOne testModel = new ExtendedOne();
-        testModel.setBoolean1(false);
-        testModel.setDouble1(2.3);
-        testModel.setString1("test");
-        testModel.setLong1(123123l);
+        testModel.boolean1 = false;
+        testModel.double1 = 2.3;
+        testModel.string1 = "test";
+        testModel.long1 = 123123l;
         Uri uri = testModel.save(mContext);
         assertNotNull(uri);
 
         long id = testModel.getId();
 
         Cursor c = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedOne.class),null,null,null,null);
-        ObjectCursor<ExtendedOne> cursor = new ObjectCursor<ExtendedOne>(c, ExtendedOne.CURSOR_CREATOR);
+        ObjectCursor<ExtendedOne> cursor = new ObjectCursor<>(c, ExtendedOne.class);
         if (cursor.moveToFirst()) {
             ExtendedOne m = cursor.getModel();
-            assertEquals(false, m.isBoolean1());
-            assertEquals(2.3, m.getDouble1());
-            assertEquals("test", m.getString1());
-            assertEquals(123123l, m.getLong1());
+            assertEquals(false, m.boolean1);
+            assertEquals(2.3, m.double1);
+            assertEquals("test", m.string1);
+            assertEquals(123123l, m.long1);
             assertEquals(id, m.getId());
         } else {
             assertFalse("cursor empty", true);
@@ -58,36 +56,37 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
 
     public void testDelete() {
         ExtendedOne testModel = new ExtendedOne();
-        testModel.setBoolean1(false);
-        testModel.setDouble1(2.3);
-        testModel.setString1("test");
-        testModel.setLong1(123123l);
+        testModel.boolean1 = false;
+        testModel.double1 = 2.3;
+        testModel.string1 = "test";
+        testModel.long1 = 123123l;
         Uri uri = testModel.save(mContext);
         assertNotNull(uri);
         boolean success = testModel.delete(mContext);
         assertTrue(success);
     }
 
+
     public void testBulkInsert() {
         ExtendedOne testModel = new ExtendedOne();
-        testModel.setBoolean1(false);
-        testModel.setDouble1(1.3);
-        testModel.setString1("tasdf");
-        testModel.setLong1(23123123l);
+        testModel.boolean1 = false;
+        testModel.double1 = 1.3;
+        testModel.string1 = "tasdf";
+        testModel.long1 = 23123123l;
 
         ExtendedOne testModel2 = new ExtendedOne();
-        testModel2.setBoolean1(true);
-        testModel2.setDouble1(2.1);
-        testModel2.setString1("aaaa");
-        testModel2.setLong1(2312l);
+        testModel.boolean1 = true;
+        testModel.double1 = 2.1;
+        testModel.string1 = "aaaa";
+        testModel.long1 = 2312l;
 
         ExtendedOne testModel3 = new ExtendedOne();
-        testModel3.setBoolean1(false);
-        testModel3.setDouble1(2.3);
-        testModel3.setString1("test");
-        testModel3.setLong1(123123l);
+        testModel.boolean1 = false;
+        testModel.double1 = 2.3;
+        testModel.string1 = "test";
+        testModel.long1 = 123123l;
 
-        ArrayList<AbstractDataModel> models = new ArrayList<AbstractDataModel>();
+        ArrayList<AbstractDataModel> models = new ArrayList<>();
         models.add(testModel);
         models.add(testModel2);
         models.add(testModel3);
@@ -99,12 +98,11 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
 
     public void testUpdate() {
         ExtendedOne testModel = new ExtendedOne();
-        testModel.setBoolean1(false);
-        testModel.setDouble1(2.3);
-        testModel.setString1("test");
-        testModel.setLong1(123123l);
+        testModel.boolean1 = false;
+        testModel.double1 = 2.3;
+        testModel.string1 = "test";
+        testModel.long1 = 123123l;
         Uri uri = testModel.save(mContext);
-        final long id = testModel.getId();
         assertNotNull(uri);
 
         testModel.boolean1 = true;
@@ -113,57 +111,55 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
         uri = testModel.save(mContext);
         assertNotNull(uri);
 
-        assertEquals(id, testModel.getId());
+        long id = testModel.getId();
 
         Cursor c = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedOne.class),null,null,null,null);
-        ObjectCursor<ExtendedOne> cursor = new ObjectCursor<ExtendedOne>(c, ExtendedOne.CURSOR_CREATOR);
+        ObjectCursor<ExtendedOne> cursor = new ObjectCursor<>(c, ExtendedOne.class);
         if (cursor.moveToFirst()) {
             ExtendedOne m = cursor.getModel();
-            assertEquals(true, m.isBoolean1());
-            assertEquals(4.1, m.getDouble1());
+            assertEquals(true, m.boolean1);
+            assertEquals(4.1, m.double1);
             assertEquals(id, m.getId());
         } else {
             assertFalse("cursor empty", true);
         }
-
-
     }
 
     public void testWipeDatabase() {
         ExtendedOne testModel = new ExtendedOne();
-        testModel.setBoolean1(false);
-        testModel.setDouble1(2.3);
-        testModel.setString1("test");
-        testModel.setLong1(123123l);
+        testModel.boolean1 = false;
+        testModel.double1 = 2.3;
+        testModel.string1 = "test";
+        testModel.long1 = 123123l;
         testModel.save(mContext);
 
-        ExtendedTwo extendedTwo = new ExtendedTwo();
-        extendedTwo.setBoolean1(true);
-        extendedTwo.setDouble1(3.4);
-        extendedTwo.setString1("test2");
-        extendedTwo.setLong1(555444333);
-        extendedTwo.save(mContext);
+        ExtendedTwo test2Model = new ExtendedTwo();
+        test2Model.boolean1 = true;
+        test2Model.double1 = 3.4;
+        test2Model.string1 = "test2";
+        test2Model.long1 = 555444333;
+        test2Model.save(mContext);
 
         Cursor c = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedOne.class),null,null,null,null);
-        ObjectCursor<ExtendedOne> cursor = new ObjectCursor<ExtendedOne>(c, ExtendedOne.CURSOR_CREATOR);
+        ObjectCursor<ExtendedOne> cursor = new ObjectCursor<>(c, ExtendedOne.class);
         if (cursor.moveToFirst()) {
             ExtendedOne m = cursor.getModel();
-            assertEquals(false, m.isBoolean1());
-            assertEquals(2.3, m.getDouble1());
-            assertEquals("test", m.getString1());
-            assertEquals(123123l, m.getLong1());
+            assertEquals(false, m.boolean1);
+            assertEquals(2.3, m.double1);
+            assertEquals("test", m.string1);
+            assertEquals(123123l, m.long1);
         } else {
             assertFalse("cursor empty", true);
         }
 
         c = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedTwo.class),null,null,null,null);
-        ObjectCursor<ExtendedTwo> cursor2 = new ObjectCursor<ExtendedTwo>(c, ExtendedTwo.CURSOR_CREATOR);
+        ObjectCursor<ExtendedTwo> cursor2 = new ObjectCursor<>(c, ExtendedTwo.class);
         if (cursor2.moveToFirst()) {
             ExtendedTwo m = cursor2.getModel();
-            assertEquals(true, m.isBoolean1());
-            assertEquals(3.4, m.getDouble1());
-            assertEquals("test2", m.getString1());
-            assertEquals(555444333, m.getLong1());
+            assertEquals(true, m.boolean1);
+            assertEquals(3.4, m.double1);
+            assertEquals("test2", m.string1);
+            assertEquals(555444333, m.long1);
         } else {
             assertFalse("cursor empty", true);
         }
@@ -171,11 +167,11 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
         DatabaseHelper.wipeDatabase(mContext);
 
         c = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedOne.class),null,null,null,null);
-        cursor = new ObjectCursor<ExtendedOne>(c, ExtendedOne.CURSOR_CREATOR);
+        cursor = new ObjectCursor<ExtendedOne>(c, ExtendedOne.class);
         assertEquals(cursor.moveToFirst(), false);
 
         c = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedTwo.class),null,null,null,null);
-        cursor2 = new ObjectCursor<ExtendedTwo>(c, ExtendedTwo.CURSOR_CREATOR);
+        cursor2 = new ObjectCursor<ExtendedTwo>(c, ExtendedTwo.class);
         assertEquals(cursor2.moveToFirst(), false);
 
 
@@ -183,19 +179,19 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
 
     public void testAutoIncrement() {
         ExtendedOne testModel = new ExtendedOne();
-        testModel.setBoolean1(false);
-        testModel.setDouble1(2.3);
-        testModel.setString1("test");
-        testModel.setLong1(123123l);
+        testModel.boolean1 = false;
+        testModel.double1 = 2.3;
+        testModel.string1 = "test";
+        testModel.long1 = 123123l;
         testModel.save(mContext);
 
         long id = testModel.getId();
 
         ExtendedOne test2Model = new ExtendedOne();
-        test2Model.setBoolean1(true);
-        test2Model.setDouble1(3.4);
-        test2Model.setString1("test2");
-        test2Model.setLong1(555444333);
+        test2Model.boolean1 = true;
+        test2Model.double1 = 3.4;
+        test2Model.string1 = "test2";
+        test2Model.long1 = 555444333;
         test2Model.save(mContext);
 
         long id2 = test2Model.getId();
@@ -206,30 +202,30 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
 
     public void testUniqueness() {
         ExtendedTwo testModel = new ExtendedTwo();
-        testModel.setBoolean1(false);
-        testModel.setDouble1(2.3);
-        testModel.setString1("test");
-        testModel.setLong1(123123l);
-        testModel.setInt1(12);
+        testModel.boolean1 = false;
+        testModel.double1 = 2.3;
+        testModel.string1 = "test";
+        testModel.long1 = 123123l;
+        testModel.int1 = 12;
         testModel.save(mContext);
 
-        assertEquals(testModel.getInt1(), 12);
+        assertEquals(testModel.int1, 12);
 
         Cursor c = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedTwo.class),null,null,null,null);
         assertTrue(c.moveToFirst());
         assertEquals(c.getCount(), 1);
 
-        ExtendedTwo extendedTwo = new ExtendedTwo();
-        extendedTwo.setBoolean1(true);
-        extendedTwo.setDouble1(3.4);
-        extendedTwo.setString1("test2");
-        extendedTwo.setLong1(555444333);
-        extendedTwo.setInt1(12);
-        extendedTwo.save(mContext);
-        assertEquals(extendedTwo.getInt1(), 12);
+        ExtendedTwo test2Model = new ExtendedTwo();
+        test2Model.boolean1 = true;
+        test2Model.double1 = 3.4;
+        test2Model.string1 = "test2";
+        test2Model.long1 = 555444333;
+        test2Model.int1 = 12;
+        test2Model.save(mContext);
+        assertEquals(test2Model.int1, 12);
 
         Cursor c2 = getMockContentResolver().query(DatabaseHelper.getContentUri(ExtendedTwo.class),null,null,null,null);
-        ObjectCursor<ExtendedTwo> cursor2 = new ObjectCursor<>(c2, ExtendedTwo.CURSOR_CREATOR);
+        ObjectCursor<ExtendedTwo> cursor2 = new ObjectCursor<>(c2, ExtendedTwo.class);
         assertTrue(c2.moveToFirst());
         assertEquals(c2.getCount(), 1);
         assertEquals(cursor2.getModel().double1, 3.4);
@@ -242,16 +238,16 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
 
         ExtendedTwo extendedTwo = new ExtendedTwo();
         extendedTwo.setId(id);
-        extendedTwo.setString1("parcelled");
-        extendedTwo.setBoolean1(true);
-        extendedTwo.setInt1(12);
-        extendedTwo.setLong1(555444333);
-        extendedTwo.setFloat1(123.456f);
-        extendedTwo.setDouble1(3.4);
-        extendedTwo.setDate1(new Date());
+        extendedTwo.string1 = "parcelled";
+        extendedTwo.boolean1 = true;
+        extendedTwo.int1 = 12;
+        extendedTwo.long1 = 555444333;
+        extendedTwo.float1 = 123.456f;
+        extendedTwo.double1 = 3.4;
+        extendedTwo.date1 = new Date();
 
         extendedTwo.save(mContext);
-        assertEquals(extendedTwo.getInt1(), 12);
+        assertEquals(extendedTwo.int1, 12);
         Bundle b = new Bundle();
         b.putParcelable("e2", extendedTwo);
 
@@ -269,12 +265,12 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
         assertFalse("Bundle is the same", b2 == b);
         assertFalse("model is the same", e2 == extendedTwo);
         assertEquals(id, e2.getId());
-        assertEquals("parcelled", e2.getString1());
-        assertTrue(e2.isBoolean1());
-        assertEquals(extendedTwo.getInt1(), e2.getInt1());
-        assertEquals(extendedTwo.getLong1(), e2.getLong1());
-        assertEquals(extendedTwo.getFloat1(), e2.getFloat1());
-        assertEquals(extendedTwo.getDouble1(), e2.getDouble1());
-        assertEquals(extendedTwo.getDate1(), e2.getDate1());
+        assertEquals("parcelled", e2.string1);
+        assertTrue(e2.boolean1);
+        assertEquals(extendedTwo.int1, e2.int1);
+        assertEquals(extendedTwo.long1, e2.long1);
+        assertEquals(extendedTwo.float1, e2.float1);
+        assertEquals(extendedTwo.double1, e2.double1);
+        assertEquals(extendedTwo.date1, e2.date1);
     }
 }

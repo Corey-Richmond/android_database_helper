@@ -92,7 +92,10 @@ public class CodeGenWriter {
 
     private String emitTableBuilder(AnnotatedField annotatedField, boolean contains) {
         String addColumn = "";
-        if (annotatedField.getSimpleType().equals("boolean") || annotatedField.getSimpleType().equals("int") || annotatedField.getSimpleType().equals("long")) {
+        if (annotatedField.getSimpleType().equals("boolean") ||
+            annotatedField.getSimpleType().equals("int")     ||
+            annotatedField.getSimpleType().equals("long")    ||
+            annotatedField.getSimpleType().equals("Date")) {
             addColumn = "\t\t\t.add" + "IntegerColumn(" + annotatedField.getName().toUpperCase() + ")";
         } else if (annotatedField.getSimpleType().equals("double") || annotatedField.getSimpleType().equals("float")) {
             addColumn = "\t\t\t.add" + "RealColumn(" + annotatedField.getName().toUpperCase() + ")";
@@ -132,7 +135,11 @@ public class CodeGenWriter {
     }
 
     private String emitSetters(AnnotatedField annotatedField) {
-        return "\t\taValues.put("+annotatedField.getName().toUpperCase()+ "," + " m" + mEnclosingClass.getClassName() + "." + annotatedField.getName() + ");\n";
+        if (annotatedField.getSimpleType().equals("Date"))
+            return "\t\tif (m" + mEnclosingClass.getClassName() + "." + annotatedField.getName() + " != null) " +
+                   "aValues.put(" + annotatedField.getName().toUpperCase()+ ", m" + mEnclosingClass.getClassName() + "." + annotatedField.getName() + ".getTime());\n";
+        else
+            return "\t\taValues.put("+annotatedField.getName().toUpperCase()+ "," + " m" + mEnclosingClass.getClassName() + "." + annotatedField.getName() + ");\n";
     }
 
     protected String firstLetterToUpper(String word) {

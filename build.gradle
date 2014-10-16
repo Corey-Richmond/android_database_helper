@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-//    compile project(':processor')
+    compile project(':processor')
     compile 'com.android.support:support-v4:20.0.0'
 }
 
