@@ -23,10 +23,10 @@ public class AnnotationsConverter {
         this.elementUtils = elementUtils;
     }
 
-    public Map<EnclosingClass, Collection<AnnotatedField>> convert(
+    public Map<EnclosingClass, Collection<ColumnField>> convert(
             Collection<? extends Element> annotatedElements) {
 
-        FluentIterable<AnnotatedField> annotatedFields =
+        FluentIterable<ColumnField> annotatedFields =
                 from(annotatedElements).filter(new ValidModifier()).transform(new ToAnnotatedField());
 
         Set<String> erasedEnclosingClasses =
@@ -55,17 +55,17 @@ public class AnnotationsConverter {
         messager.printMessage(Diagnostic.Kind.ERROR, error, element);
     }
 
-    private class ToAnnotatedField implements Function<Element, AnnotatedField> {
+    private class ToAnnotatedField implements Function<Element, ColumnField> {
         @Override
-        public AnnotatedField apply(Element aFieldElement) {
-            return new AnnotatedField(aFieldElement);
+        public ColumnField apply(Element aFieldElement) {
+            return new ColumnField(aFieldElement);
         }
     }
 
-    private class ToErasedEnclosingClass implements Function<AnnotatedField, String> {
+    private class ToErasedEnclosingClass implements Function<ColumnField, String> {
 
         @Override
-        public String apply(AnnotatedField field) {
+        public String apply(ColumnField field) {
             TypeElement enclosingClassType = field.getEnclosingClassType();
             if (enclosingClassType.getModifiers().contains(Modifier.PRIVATE)) {
                 logError(enclosingClassType, "Enclosing class must not be private");
@@ -74,7 +74,7 @@ public class AnnotationsConverter {
         }
     }
 
-    private class ByEnclosingClass implements Function<AnnotatedField, EnclosingClass> {
+    private class ByEnclosingClass implements Function<ColumnField, EnclosingClass> {
 
         private final Set<String> annotatedClasses = new HashSet<>();
 
@@ -83,7 +83,7 @@ public class AnnotationsConverter {
         }
 
         @Override
-        public EnclosingClass apply(AnnotatedField field) {
+        public EnclosingClass apply(ColumnField field) {
             TypeElement classType = field.getEnclosingClassType();
             String classPackage = getPackageName(classType);
             String targetClassName = getClassName(classType, classPackage);

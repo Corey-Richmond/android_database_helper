@@ -11,44 +11,44 @@ import javax.tools.Diagnostic;
 
 import com.vokal.codegen.tools.*;
 
-@SupportedAnnotationTypes({"com.vokal.codegen.Column", "com.vokal.codegen.Unique"})
+@SupportedAnnotationTypes({"com.vokal.codegen.Column", "com.vokal.codegen.Table"})
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ModelProcessor extends AbstractProcessor {
 
-    public static final String SUFFIX = "Helper";
+    public static final String SUFFIX            = "Helper";
+    public static final String COLUMN_ANNOTATION = "com.vokal.codegen.Column";
+    public static final String TABLE_ANNOTATION  = "com.vokal.codegen.Table";
 
-    private TypeElement mUniqueAnnotation;
+    private Set<? extends Element> mTableElements;
+
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        System.out.println("******************* PRE COMPILER ********************");
-
         for (TypeElement annotation : annotations) {
-            if (annotation.getQualifiedName().toString().equals("com.vokal.codegen.Unique")) {
-                mUniqueAnnotation = annotation;
+            if (annotation.getQualifiedName().toString().equals(TABLE_ANNOTATION)) {
+                System.out.println("******************* PRE-COMPILER START ********************");
+                mTableElements = roundEnv.getElementsAnnotatedWith(annotation);
             }
         }
 
         for (TypeElement annotation : annotations) {
-            if (annotation.getQualifiedName().toString().equals("com.vokal.codegen.Column")) {
-                write(classesWithFieldsAnnotatedWith(roundEnv.getElementsAnnotatedWith(annotation)),
-                      mUniqueAnnotation == null ? null :
-                      classesWithFieldsAnnotatedWith(roundEnv.getElementsAnnotatedWith(mUniqueAnnotation)));
+            if (annotation.getQualifiedName().toString().equals(COLUMN_ANNOTATION)) {
+                write(classesWithFieldsAnnotatedWith(roundEnv.getElementsAnnotatedWith(annotation)), mTableElements);
+                System.out.println("******************* PRE-COMPILER END ********************");
             }
         }
 
         return true;
     }
 
-    private void write(Map<EnclosingClass, Collection<AnnotatedField>> columnFieldsByEnclosingClass,
-                       Map<EnclosingClass, Collection<AnnotatedField>> uniqueFieldsByEnclosingClass) {
+    private void write(Map<EnclosingClass, Collection<ColumnField>> columnFieldsByEnclosingClass,
+                       Set<? extends Element> mTableElements) {
         WriterFactory writerFactory = new WriterFactory(filer(), SUFFIX);
         for (EnclosingClass enclosingClass : columnFieldsByEnclosingClass.keySet()) {
             try {
                 writerFactory.writeClass(enclosingClass)
-                        .withFields(columnFieldsByEnclosingClass.get(enclosingClass),
-                                    uniqueFieldsByEnclosingClass == null ? null :
-                                    uniqueFieldsByEnclosingClass.get(enclosingClass));
+                        .withTableElements(mTableElements)
+                        .withFields(columnFieldsByEnclosingClass.get(enclosingClass));
             } catch (IOException e) {
                 messager().printMessage(Diagnostic.Kind.ERROR,
                                         "Error generating helper for class " + enclosingClass.getClassName()
@@ -58,7 +58,7 @@ public class ModelProcessor extends AbstractProcessor {
     }
 
 
-    private Map<EnclosingClass, Collection<AnnotatedField>> classesWithFieldsAnnotatedWith(
+    private Map<EnclosingClass, Collection<ColumnField>> classesWithFieldsAnnotatedWith(
             Set<? extends Element> annotatedElements) {
         return new AnnotationsConverter(messager(), elementUtils())
                 .convert(annotatedElements);

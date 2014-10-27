@@ -2,18 +2,19 @@ package com.vokal.db.test.models;
 
 
 import com.vokal.codegen.Column;
-import com.vokal.codegen.Unique;
+import com.vokal.codegen.Table;
 import com.vokal.db.codegen.DataModel;
 
+import static com.vokal.codegen.Column.Constraint.unique;
 
+@Table(uniqueColumns = {"int1", "string1"}, primaryKeys = {"int1", "string1"})
 public class ExtendedOne extends DataModel {
 
-    @Unique
-    @Column public int     int1; // Todo: autoincrement
-    @Column public String  string1;
-    @Column public boolean boolean1;
-    @Column public long    long1;
-    @Column public double  double1;
+    public @Column(constraint = {unique}) int     int1; // Todo: autoincrement
+    public @Column                        String  string1;
+    public @Column                        boolean boolean1;
+    public @Column                        long    long1;
+    public @Column                        double  double1;
 
     public long getId() {
         return _id;
