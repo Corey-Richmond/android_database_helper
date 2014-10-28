@@ -20,8 +20,8 @@ public class SQLiteTable {
     static final int FIELD_TYPE_BLOB    = 4;
 
     public interface TableCreator {
-        public @Nullable SQLiteTable buildTableSchema(Builder aBuilder);
-        public @Nullable SQLiteTable updateTableSchema(Upgrader aUpgrader, int aOldVersion);
+        public @Nullable void buildTableSchema(Builder aBuilder);
+        public @Nullable void updateTableSchema(Upgrader aUpgrader, int aOldVersion);
     }
 
     public static class Column {
@@ -488,30 +488,16 @@ public class SQLiteTable {
         return clazz != null && DataModelInterface.class.isAssignableFrom(clazz);
     }
 
-    static TableCreator getDefaultCreator(final AbstractDataModel aModel) {
-        return new TableCreator() {
-            @Override
-            public SQLiteTable buildTableSchema(Builder aBuilder) {
-                return aModel.onTableCreate(aBuilder);
-            }
-
-            @Override
-            public SQLiteTable updateTableSchema(Upgrader aUpgrader, int aOldVersion) {
-                return aModel.onTableUpgrade(aUpgrader, aOldVersion);
-            }
-        };
-    }
-
     static TableCreator getDefaultCreator(final DataModelInterface aModel) {
         return new TableCreator() {
             @Override
-            public SQLiteTable buildTableSchema(Builder aBuilder) {
-                return aModel.onTableCreate(aBuilder);
+            public void buildTableSchema(Builder aBuilder) {
+                aModel.onTableCreate(aBuilder);
             }
 
             @Override
-            public SQLiteTable updateTableSchema(Upgrader aUpgrader, int aOldVersion) {
-                return aModel.onTableUpgrade(aUpgrader, aOldVersion);
+            public void updateTableSchema(Upgrader aUpgrader, int aOldVersion) {
+                aModel.onTableUpgrade(aUpgrader, aOldVersion);
                 // TODO: auto-recreate if null and schema has changed
             }
         };

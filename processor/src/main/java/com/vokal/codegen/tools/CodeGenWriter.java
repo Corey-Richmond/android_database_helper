@@ -89,6 +89,7 @@ public class CodeGenWriter {
     private void classNameAndFieldObject() {
         mFileFormatter.addLine(
                 "public class " + mHelperClassName + " implements ModelHelper, BaseColumns {",
+                "",
                 "" + mClassName + " " + mFieldObject + ";",
                 "");
     }
@@ -101,7 +102,7 @@ public class CodeGenWriter {
     }
 
     private void populateContentValue(Collection<ColumnField> columnFields) {
-        mFileFormatter.addLine(
+        mFileFormatter.addLine("",
                 "@Override",
                 "public void populateContentValues(ContentValues aValues) {",
                 "if (" + mFieldObject + ".hasId())",
@@ -143,10 +144,9 @@ public class CodeGenWriter {
     }
 
     protected void tableCreator(Collection<ColumnField> columnFields) {
-        mFileFormatter.addLine(
-                "public static final SQLiteTable.TableCreator TABLE_CREATOR = new SQLiteTable.TableCreator() {",
+        mFileFormatter.addLine("",
                 "@Override",
-                "public SQLiteTable buildTableSchema(SQLiteTable.Builder aBuilder) {",
+                "public void onTableCreate(SQLiteTable.Builder aBuilder) {",
                 "aBuilder");
 
         for (ColumnField columnField : columnFields) {
@@ -189,15 +189,13 @@ public class CodeGenWriter {
             }
         }
 
-        mFileFormatter.addLine(";",
-                               "return aBuilder.build();",
-                               "}", "");
+        mFileFormatter.addLine(
+                ";",
+                "}", "");
 
-        mFileFormatter.addLine("@Override",
-                               "public SQLiteTable updateTableSchema(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {",
-                               "return aUpgrader.recreate().build();",
-                               "}",
-                               "};");
+        mFileFormatter.addLine(
+                "@Override",
+                "public void onTableUpgrade(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {", "}","");
     }
 
     private void tableBuilder(ColumnField columnField) {
@@ -205,6 +203,7 @@ public class CodeGenWriter {
         if (columnField.getSimpleType().equals("boolean") ||
             columnField.getSimpleType().equals("int")     ||
             columnField.getSimpleType().equals("long")    ||
+            columnField.getSimpleType().equals("Long")    ||
             columnField.getSimpleType().equals("Date")) {
             addColumn = ".add" + "IntegerColumn(" + columnField.getName().toUpperCase() + ")";
         } else if (columnField.getSimpleType().equals("double") || columnField.getSimpleType().equals("float")) {
@@ -226,7 +225,7 @@ public class CodeGenWriter {
     }
 
     private void setObject() {
-        mFileFormatter.addLine(
+        mFileFormatter.addLine("",
                 "@Override public void setObject(Object a) {",
                 mFieldObject + " = ((" + mClassName + ") a);",
                 "}");

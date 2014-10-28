@@ -8,7 +8,6 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import com.vokal.db.util.CursorGetter;
@@ -30,7 +29,11 @@ public abstract class AbstractDataModel implements DataModelInterface, BaseColum
                     }
                 }
             }
-            return new AbstractDataModel(source) {};
+            return new AbstractDataModel(source) {
+                @Override public void onTableCreate(SQLiteTable.Builder aBuilder) {}
+                @Override public void onTableUpgrade(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {}
+                @Override public void populateContentValues(ContentValues aValues) {}
+            };
         }
 
         @Override
@@ -55,25 +58,6 @@ public abstract class AbstractDataModel implements DataModelInterface, BaseColum
             _id = aGetter.getLong(_ID);
         }
     }
-
-    /*
-     * override to add your model field columns and constraints
-     */
-    @Override
-    public SQLiteTable onTableCreate(SQLiteTable.Builder aBuilder) {
-        return aBuilder.build();
-    }
-
-    /*
-     * override to handle upgrades.  if you don't override, table will be dropped and re-created
-     */
-    @Override
-    public SQLiteTable onTableUpgrade(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {
-        return null;
-    }
-
-    @Override
-    public void populateContentValues(ContentValues aValues) {}
 
     public Uri save(Context aContext) {
         ContentValues values = new ContentValues();

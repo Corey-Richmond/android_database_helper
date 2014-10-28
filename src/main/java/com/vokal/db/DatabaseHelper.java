@@ -146,7 +146,8 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
             TableCreator creator = getTableCreator(entry.getKey());
             if (creator != null) {
                 SQLiteTable.Builder builder = new SQLiteTable.Builder(entry.getValue());
-                SQLiteTable table = creator.buildTableSchema(builder);
+                creator.buildTableSchema(builder);
+                SQLiteTable table = builder.build();
                 if (table != null) {
                     db.execSQL(table.getCreateSQL());
                     if (table.getIndicesSQL() != null) {
@@ -183,17 +184,20 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
             String tableName = entry.getValue();
             if (!tableNames.contains(tableName)) {
                 SQLiteTable.Builder builder = new SQLiteTable.Builder(tableName);
-                table = creator.buildTableSchema(builder);
+                creator.buildTableSchema(builder);
+                table = builder.build();
                 if (table != null) {
                     db.execSQL(table.getCreateSQL());
                 }
             } else {
                 SQLiteTable.Upgrader upgrader = new SQLiteTable.Upgrader(tableName);
-                table = creator.updateTableSchema(upgrader, oldVersion);
+                creator.updateTableSchema(upgrader, oldVersion);
+                table = upgrader.build();
                 if (table != null) {
                     if (table.isCleanUpgrade()) {
                         SQLiteTable.Builder builder = new SQLiteTable.Builder(tableName);
-                        table = creator.buildTableSchema(builder);
+                        creator.buildTableSchema(builder);
+                        table = builder.build();
                         if (table != null) {
                             db.execSQL("DROP TABLE IF EXISTS " + tableName);
                             db.execSQL(table.getCreateSQL());
@@ -257,11 +261,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
             }
 
             if (model != null) {
-                if (model instanceof AbstractDataModel) {
-                    creator = SQLiteTable.getDefaultCreator((AbstractDataModel) model);
-                } else if (model instanceof DataModelInterface) {
-                    creator = SQLiteTable.getDefaultCreator((DataModelInterface) model);
-                }
+                creator = SQLiteTable.getDefaultCreator((DataModelInterface) model);
             }
         }
 
@@ -300,7 +300,9 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
             if (tableClass != null) {
                 TableCreator creator = getTableCreator(tableClass);
                 if (creator != null) {
-                    SQLiteTable create = creator.buildTableSchema(new SQLiteTable.Builder(aTableName));
+                    SQLiteTable.Builder builder = new SQLiteTable.Builder(aTableName);
+                    creator.buildTableSchema(builder);
+                    SQLiteTable create = builder.build();
                     if (create != null) {
                         for (SQLiteTable.Column col : create.getColumns()) {
                             columns.add(col.name);

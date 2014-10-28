@@ -73,7 +73,8 @@ public class DatabaseHelperTests extends ProviderTestCase2<SimpleContentProvider
         assertNotNull(creator);
 
         SQLiteTable.Builder builder = new SQLiteTable.Builder("testinterface");
-        SQLiteTable table = creator.buildTableSchema(builder);
+        creator.buildTableSchema(builder);
+        SQLiteTable table = builder.build();
 
         ContentResolver resolver = newResolverWithContentProviderFromSql(getMockContext(), "",
                                                                          SimpleContentProvider.class,

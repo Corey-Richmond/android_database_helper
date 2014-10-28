@@ -10,7 +10,7 @@ import com.vokal.db.SQLiteTable;
 import com.vokal.db.util.CursorCreator;
 import com.vokal.db.util.CursorGetter;
 
-public class DataModel extends AbstractDataModel implements Model {
+public class DataModel extends AbstractDataModel {
 
     ModelHelper mClass;
 
@@ -26,8 +26,15 @@ public class DataModel extends AbstractDataModel implements Model {
     protected DataModel(Parcel aSource) { super(aSource);}
 
     @Override
+    public void onTableCreate(SQLiteTable.Builder aBuilder) {
+        mClass.onTableCreate(aBuilder);
+    }
+
+    @Override
+    public void onTableUpgrade(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {}
+
+    @Override
     public void populateContentValues(ContentValues contentValues) {
         mClass.populateContentValues(contentValues);
     }
-
 }

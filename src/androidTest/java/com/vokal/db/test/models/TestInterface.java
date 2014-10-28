@@ -46,20 +46,19 @@ public class TestInterface extends BaseModel implements DataModelInterface {
     }
 
     @Override
-    public SQLiteTable onTableCreate(SQLiteTable.Builder aBuilder) {
-        return aBuilder.addStringColumn(COL_STRING)
+    public void onTableCreate(SQLiteTable.Builder aBuilder) {
+        aBuilder.addStringColumn(COL_STRING)
                 .addIntegerColumn(COL_BOOLEAN)
                 .addIntegerColumn(COL_INT)
                 .addIntegerColumn(COL_LONG).primaryKey()
                 .addRealColumn(COL_FLOAT)
                 .addRealColumn(COL_DOUBLE)
-                .addIntegerColumn(COL_DATE)
-                .build();
+                .addIntegerColumn(COL_DATE);
     }
 
     @Override
-    public SQLiteTable onTableUpgrade(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {
-        return aUpgrader.addStringColumn(COL_STRING_NEW).build();
+    public void onTableUpgrade(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {
+        aUpgrader.addStringColumn(COL_STRING_NEW);
     }
 
     @Override

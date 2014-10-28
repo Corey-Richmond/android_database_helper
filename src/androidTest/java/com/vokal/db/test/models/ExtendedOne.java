@@ -2,12 +2,10 @@ package com.vokal.db.test.models;
 
 
 import com.vokal.codegen.Column;
-import com.vokal.codegen.Table;
 import com.vokal.db.codegen.DataModel;
 
 import static com.vokal.codegen.Column.Constraint.unique;
 
-@Table(uniqueColumns = {"int1", "string1"}, primaryKeys = {"int1", "string1"})
 public class ExtendedOne extends DataModel {
 
     public @Column(constraint = {unique}) int     int1; // Todo: autoincrement
