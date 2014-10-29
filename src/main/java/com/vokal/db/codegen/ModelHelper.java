@@ -1,7 +1,10 @@
 package com.vokal.db.codegen;
 
-import com.vokal.db.DataModelInterface;
+import android.content.ContentValues;
 
-public interface ModelHelper extends DataModelInterface {
-    public void setObject(Object a);
+import com.vokal.db.SQLiteTable;
+
+public interface ModelHelper {
+    void onTableCreate(SQLiteTable.Builder aBuilder);
+    void populateContentValues(ContentValues aValues, Object a);
 }

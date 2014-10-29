@@ -17,7 +17,6 @@ public class DataModel extends AbstractDataModel {
     public DataModel() {
         try {
             mClass = ((ModelHelper) Class.forName(getClass().getName() + "Helper").newInstance());
-            mClass.setObject(this);
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -41,6 +40,6 @@ public class DataModel extends AbstractDataModel {
 
     @Override
     public void populateContentValues(ContentValues contentValues) {
-        mClass.populateContentValues(contentValues);
+        mClass.populateContentValues(contentValues, this);
     }
 }
