@@ -23,7 +23,13 @@ public class DataModel extends AbstractDataModel {
         }
     }
 
-    protected DataModel(Parcel aSource) { super(aSource);}
+    protected DataModel(Parcel aSource) {
+        super(aSource);
+    }
+
+    protected DataModel(CursorGetter aGetter) {
+        super(aGetter);
+    }
 
     @Override
     public void onTableCreate(SQLiteTable.Builder aBuilder) {

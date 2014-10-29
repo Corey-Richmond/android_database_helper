@@ -90,7 +90,7 @@ public class CodeGenWriter {
         mFileFormatter.addLine(
                 "public class " + mHelperClassName + " implements ModelHelper, BaseColumns {",
                 "",
-                "" + mClassName + " " + mFieldObject + ";",
+                "" + mClassName.replace('$', '.') + " " + mFieldObject + ";",
                 "");
     }
 
@@ -117,23 +117,23 @@ public class CodeGenWriter {
         if (columnField.getSimpleType().equals("Date"))
             mFileFormatter.addLine(
                     "if ("+ getFieldString(columnField.getName()) + " != null) " +
-                    "aValues.put(" + columnField.getName().toUpperCase() + ", " + getFieldString(
-                            columnField.getName()) + ".getTime());");
+                    "aValues.put(" + columnField.getName().toUpperCase() + ", "
+                            + getFieldString(columnField.getName()) + ".getTime());");
         else
             mFileFormatter.addLine(
-                    "aValues.put(" + columnField.getName().toUpperCase() + ", " + getFieldString(
-                            columnField.getName()) + ");");
+                    "aValues.put(" + columnField.getName().toUpperCase() + ", "
+                            + getFieldString(columnField.getName()) + ");");
     }
 
     private void cursorCreator(Collection<ColumnField> columnFields) {
+        String className = mClassName.replace('$', '.');
         mFileFormatter.addLine(
-                "public static final CursorCreator<" + mClassName + "> CURSOR_CREATOR = new CursorCreator<" + mClassName + ">() {",
-                "public " + mClassName + " createFromCursorGetter(CursorGetter getter) {",
-                mClassName + " model = new " + mClassName + "();");
+                "public static final CursorCreator<" + className + "> CURSOR_CREATOR = new CursorCreator<" + className + ">() {",
+                "public " + className + " createFromCursorGetter(CursorGetter getter) {",
+                className + " model = new " + className + "();");
 
         for (ColumnField columnField : columnFields) {
-            mFileFormatter.addLine("model." + columnField.getName() + " = getter.get" + firstLetterToUpper(
-                    columnField.getSimpleType()) + "(" + columnField.getName().toUpperCase() + ");");
+            cursorCreatorGetType(columnField);
         }
 
         mFileFormatter.addLine(
@@ -141,6 +141,18 @@ public class CodeGenWriter {
                 "return model;",
                 "}",
                 "};");
+    }
+
+    private void cursorCreatorGetType(ColumnField columnField) {
+        String getterType = "";
+        if (columnField.getSimpleType().equals("Integer")) {
+            getterType = "Int";
+        } else {
+            getterType = firstLetterToUpper(columnField.getSimpleType());
+        }
+        mFileFormatter.addLine(
+                "model." + columnField.getName() + " = getter.get" + getterType +
+                        "(" + columnField.getName().toUpperCase() + ");");
     }
 
     protected void tableCreator(Collection<ColumnField> columnFields) {
@@ -155,36 +167,39 @@ public class CodeGenWriter {
 
         if(mTableElements != null) {
             for (Element e : mTableElements) {
-                int length;
-                if ((length = e.getAnnotation(Table.class).primaryKeys().length) > 0) {
-                    String[] keys = e.getAnnotation(Table.class).primaryKeys();
-                    String primaryKey = ".primaryKey(";
-                    for (int i = 0; i <= length; i++) {
-                        if (i == length) {
-                            primaryKey += ")";
-                            continue;
-                        } else if (i > 0 ) {
-                            primaryKey += ",";
+                if(e.getSimpleName().toString().equals(mClassName)) {
+                    System.out.println(e.getSimpleName().toString());
+                    int length;
+                    if ((length = e.getAnnotation(Table.class).primaryKeys().length) > 0) {
+                        String[] keys = e.getAnnotation(Table.class).primaryKeys();
+                        String primaryKey = ".primaryKey(";
+                        for (int i = 0; i <= length; i++) {
+                            if (i == length) {
+                                primaryKey += ")";
+                                continue;
+                            } else if (i > 0) {
+                                primaryKey += ",";
+                            }
+                            primaryKey += keys[i].toUpperCase();
                         }
-                        primaryKey += keys[i].toUpperCase();
+                        mFileFormatter.addLine(primaryKey);
                     }
-                    mFileFormatter.addLine(primaryKey);
-                }
 
 
-                if ((length = e.getAnnotation(Table.class).uniqueColumns().length) > 0) {
-                    String[] uniques = e.getAnnotation(Table.class).uniqueColumns();
-                    String uniqueColumns = ".unique(";
-                    for (int i = 0; i <= length; i++) {
-                        if (i == length) {
-                            uniqueColumns += ")";
-                            continue;
-                        } else if (i > 0 ) {
-                            uniqueColumns += ",";
+                    if ((length = e.getAnnotation(Table.class).uniqueColumns().length) > 0) {
+                        String[] uniques = e.getAnnotation(Table.class).uniqueColumns();
+                        String uniqueColumns = ".unique(";
+                        for (int i = 0; i <= length; i++) {
+                            if (i == length) {
+                                uniqueColumns += ")";
+                                continue;
+                            } else if (i > 0) {
+                                uniqueColumns += ",";
+                            }
+                            uniqueColumns += uniques[i].toUpperCase();
                         }
-                        uniqueColumns += uniques[i].toUpperCase();
+                        mFileFormatter.addLine(uniqueColumns);
                     }
-                    mFileFormatter.addLine(uniqueColumns);
                 }
             }
         }
@@ -201,12 +216,16 @@ public class CodeGenWriter {
     private void tableBuilder(ColumnField columnField) {
         String addColumn;
         if (columnField.getSimpleType().equals("boolean") ||
+            columnField.getSimpleType().equals("Boolean") ||
             columnField.getSimpleType().equals("int")     ||
             columnField.getSimpleType().equals("long")    ||
             columnField.getSimpleType().equals("Long")    ||
             columnField.getSimpleType().equals("Date")) {
             addColumn = ".add" + "IntegerColumn(" + columnField.getName().toUpperCase() + ")";
-        } else if (columnField.getSimpleType().equals("double") || columnField.getSimpleType().equals("float")) {
+        } else if (columnField.getSimpleType().equals("double") ||
+                   columnField.getSimpleType().equals("Double") ||
+                   columnField.getSimpleType().equals("float")  ||
+                   columnField.getSimpleType().equals("Float")) {
             addColumn = ".add" + "RealColumn(" + columnField.getName().toUpperCase() + ")";
         } else {
             addColumn = ".add" + firstLetterToUpper(
@@ -227,7 +246,7 @@ public class CodeGenWriter {
     private void setObject() {
         mFileFormatter.addLine("",
                 "@Override public void setObject(Object a) {",
-                mFieldObject + " = ((" + mClassName + ") a);",
+                mFieldObject + " = ((" + mClassName.replace('$', '.') + ") a);",
                 "}");
     }
 

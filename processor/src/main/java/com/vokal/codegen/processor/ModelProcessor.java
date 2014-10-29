@@ -21,18 +21,17 @@ public class ModelProcessor extends AbstractProcessor {
 
     private Set<? extends Element> mTableElements;
 
-
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (TypeElement annotation : annotations) {
             if (annotation.getQualifiedName().toString().equals(TABLE_ANNOTATION)) {
-                System.out.println("******************* PRE-COMPILER START ********************");
                 mTableElements = roundEnv.getElementsAnnotatedWith(annotation);
             }
         }
 
         for (TypeElement annotation : annotations) {
             if (annotation.getQualifiedName().toString().equals(COLUMN_ANNOTATION)) {
+                System.out.println("******************* PRE-COMPILER START ********************");
                 write(classesWithFieldsAnnotatedWith(roundEnv.getElementsAnnotatedWith(annotation)), mTableElements);
                 System.out.println("******************* PRE-COMPILER END ********************");
             }

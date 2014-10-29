@@ -247,10 +247,6 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
             // continue
         }
 
-	    if (creator == null) {
-            creator = getTableCreatorFromHelper(aModelClass);
-        }
-
         if (creator == null) {
             Object model = null;
             try {
@@ -269,18 +265,6 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
             TABLE_CREATORS.put(aModelClass, creator);
         }
 
-        return creator;
-    }
-
-    public static SQLiteTable.TableCreator getTableCreatorFromHelper(Class aModelClass) {
-        SQLiteTable.TableCreator creator = null;
-        try {
-            aModelClass = Class.forName(aModelClass.getName() + "Helper");
-            Field f = aModelClass.getField("TABLE_CREATOR");
-            creator = (SQLiteTable.TableCreator) f.get(null);
-        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-            return null;
-        }
         return creator;
     }
 
