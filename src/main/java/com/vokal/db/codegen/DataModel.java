@@ -22,10 +22,6 @@ public class DataModel extends AbstractDataModel {
         }
     }
 
-    protected DataModel(Parcel aSource) {
-        super(aSource);
-    }
-
     protected DataModel(CursorGetter aGetter) {
         super(aGetter);
     }

@@ -12,35 +12,7 @@ import java.util.List;
 
 import com.vokal.db.util.CursorGetter;
 
-public abstract class AbstractDataModel implements DataModelInterface, BaseColumns, Parcelable {
-
-    public static final Creator<AbstractDataModel> CREATOR = new Creator<AbstractDataModel>() {
-        @Override
-        public AbstractDataModel createFromParcel(Parcel source) {
-            String tableName = source.readString();
-            if (SQLiteTable.isTableAbstractDataModel(tableName)) {
-                Class<?> clazz = DatabaseHelper.CLASS_MAP.get(tableName);
-                if (clazz != null) {
-                    try {
-                        Constructor constructor = clazz.getConstructor(Parcel.class);
-                        return (AbstractDataModel) constructor.newInstance(source);
-                    } catch (Exception e) {
-                        Log.e(clazz.getSimpleName(), "No Parcel constructor, cannot un-parcel!");
-                    }
-                }
-            }
-            return new AbstractDataModel(source) {
-                @Override public void onTableCreate(SQLiteTable.Builder aBuilder) {}
-                @Override public void onTableUpgrade(SQLiteTable.Upgrader aUpgrader, int aOldVersion) {}
-                @Override public void populateContentValues(ContentValues aValues) {}
-            };
-        }
-
-        @Override
-        public AbstractDataModel[] newArray(int size) {
-            return new AbstractDataModel[size];
-        }
-    };
+public abstract class AbstractDataModel implements DataModelInterface, BaseColumns {
 
     private static final String   WHERE_ID = _ID + "=?";
     private final        String[] ID_ARG   = new String[1];
@@ -48,10 +20,6 @@ public abstract class AbstractDataModel implements DataModelInterface, BaseColum
     protected transient long _id;
 
     protected AbstractDataModel() {}
-
-    protected AbstractDataModel(Parcel aSource) {
-        _id = aSource.readLong();
-    }
 
     protected AbstractDataModel(CursorGetter aGetter) {
         if (aGetter.hasColumn(_ID) && !aGetter.isNull(_ID)) {
@@ -134,15 +102,4 @@ public abstract class AbstractDataModel implements DataModelInterface, BaseColum
         _id = id;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        Class<?> clazz = ((Object) this).getClass();
-        dest.writeString(DatabaseHelper.TABLE_MAP.get(clazz));
-        dest.writeLong(_id);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 }
