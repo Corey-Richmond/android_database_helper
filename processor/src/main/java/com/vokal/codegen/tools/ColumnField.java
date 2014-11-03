@@ -14,6 +14,7 @@ public class ColumnField {
     public        boolean     mIsPrimaryKey;
     public        boolean     mIsNotNull;
     public        boolean     mIsUnique;
+    public        boolean     mIsAutoIncrement;
 
     ColumnField(Element aElement) {
         this(aElement.getSimpleName().toString(),
@@ -33,6 +34,9 @@ public class ColumnField {
             switch (constraint) {
                 case primaryKey:
                     mIsPrimaryKey = true;
+                    break;
+                case autoincrement:
+                    mIsAutoIncrement = true;
                     break;
                 case notNull:
                     mIsNotNull = true;

@@ -164,6 +164,11 @@ public class CodeGenWriter {
                 if(e.getSimpleName().toString().equals(mClassName)) {
                     addTableConstraints("primaryKey", e.getAnnotation(Table.class).primaryKeys());
                     addTableConstraints("unique", e.getAnnotation(Table.class).uniqueColumns());
+
+                    int indexLength = e.getAnnotation(Table.class).indexColumns().length;
+                    for (int i = 0; i < indexLength; i++) {
+                        addTableConstraints("index", e.getAnnotation(Table.class).indexColumns()[i].value());
+                    }
                 }
             }
         }
@@ -204,6 +209,8 @@ public class CodeGenWriter {
         String columnConstraints = "";
         if (columnField.mIsPrimaryKey)
             columnConstraints +=  ".primaryKey()" ;
+        if (columnField.mIsAutoIncrement)
+            columnConstraints +=  ".autoincrement()" ;
         if (columnField.mIsNotNull)
             columnConstraints +=  ".notNull()" ;
         if (columnField.mIsUnique)

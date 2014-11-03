@@ -2,15 +2,18 @@ package com.vokal.db.test.models;
 
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Date;
 
-import com.vokal.codegen.Column;
+import com.vokal.codegen.*;
 import com.vokal.db.codegen.DataModel;
 
 import static com.vokal.codegen.Column.Constraint.unique;
 
-public class ExtendedTwo extends DataModel {
+@Table(indexColumns = @Names("date1"),
+       primaryKeys = {"date1"})
+public class ExtendedTwo extends DataModel implements Parcelable {
 
     public @Column(constraint = unique) int     int1;
     public @Column                      Date    date1;
@@ -23,7 +26,7 @@ public class ExtendedTwo extends DataModel {
     public ExtendedTwo() {}
 
     public ExtendedTwo(Parcel aSource) {
-        super(aSource);
+//        super(aSource);
         long date = aSource.readLong();
         date1 = date == -1 ? null : new Date(date);
         string1 = aSource.readString();
@@ -35,8 +38,12 @@ public class ExtendedTwo extends DataModel {
     }
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
+//        super.writeToParcel(dest, flags);
         dest.writeLong(date1 == null ? -1 : date1.getTime());
         dest.writeString(string1);
         dest.writeInt(boolean1 ? 1 : 0);

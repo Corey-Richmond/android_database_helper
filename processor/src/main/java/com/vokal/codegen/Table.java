@@ -5,6 +5,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface Table {
-    String[] primaryKeys() default {};
-    String[] uniqueColumns() default {};
+    public String[] primaryKeys() default {};
+    public String[] uniqueColumns() default {};
+    public Names[] indexColumns() default {};
 }
