@@ -84,7 +84,7 @@ public class CodeGenWriter {
     private void staticStrings(Collection<ColumnField> columnFields) {
         for (ColumnField columnField : columnFields) {
             mFileFormatter.addLine(
-                    "private static final String " + columnField.getName().toUpperCase() + " = \"" + columnField.getName().toLowerCase() + "\";");
+                    "public static final String " + columnField.getName().toUpperCase() + " = \"" + columnField.getName().toLowerCase() + "\";");
         }
     }
 
