@@ -17,14 +17,14 @@ import static com.vokal.codegen.Column.Constraint.unique;
 public class CodeGenModel extends DataModel {
 
     /* Primitives */
-    public @Column(constraint = notNull, defaultValue = "1") byte    byte_prim;
-    public @Column(constraint = notNull, defaultValue = "1") short   short_prim;
-    public @Column(constraint = autoincrement)               int     int_prim;
-    public @Column                                           long    long_prim;
-    public @Column                                           float   float_prim;
-    public @Column                                           double  double_prim;
-    public @Column                                           boolean boolean_prim;
-    public @Column                                           char    char_prim;
+    public @Column                             byte    byte_prim;
+    public @Column                             short   short_prim;
+    public @Column(constraint = autoincrement) int     int_prim;
+    public @Column                             long    long_prim;
+    public @Column                             float   float_prim;
+    public @Column                             double  double_prim;
+    public @Column                             boolean boolean_prim;
+    public @Column                             char    char_prim;
 
     /* Arrays */
     public @Column byte[]      byte_prim_array;

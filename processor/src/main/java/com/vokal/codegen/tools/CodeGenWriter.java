@@ -18,7 +18,7 @@ public class CodeGenWriter {
     private String        mClassName;
     private String        mHelperClassName;
     private boolean       mContainsByteArray;
-    private boolean       mContainsCharaterArray;
+    private boolean       mContainsCharacterArray;
 
     Set<? extends Element> mTableElements = null;
 
@@ -58,8 +58,7 @@ public class CodeGenWriter {
         tableCreator(aColumnFields);
         cursorCreator(aColumnFields);
         if (mContainsByteArray) createByteArrayConverter();
-        if (mContainsCharaterArray) createCharacterArrayConverter();
-
+        if (mContainsCharacterArray) createCharacterArrayConverter();
 
         mFileFormatter.addLine("}");
 
@@ -123,7 +122,7 @@ public class CodeGenWriter {
             mContainsByteArray = true;
             contentString += "byteArrayToPrim( " + fieldName + " )";
         } else if ("Character[]".equals(columnField.getSimpleType())) {
-            mContainsCharaterArray = true;
+            mContainsCharacterArray = true;
             contentString += "characterArrayToString( " + fieldName + " )";
         } else {
             contentString += fieldName;
@@ -279,7 +278,10 @@ public class CodeGenWriter {
         if (!"".equals(columnField.mDefaultValue)) {
             if ("String".equals(columnField.getSimpleType()))
                 columnConstraints += ".defaultValue(\"" + columnField.mDefaultValue + "\")";
-            else if (!"String".equals(columnField.getSimpleType()))
+            else if (!"byte[]".equals(columnField.getSimpleType()) ||
+                     !"Byte[]".equals(columnField.getSimpleType()) ||
+                     !"char[]".equals(columnField.getSimpleType()) ||
+                     !"Character[]".equals(columnField.getSimpleType()))
                 columnConstraints += ".defaultValue(" + columnField.mDefaultValue + ")";
         }
         mFileFormatter.addLine(addColumn + columnConstraints);
