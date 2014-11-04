@@ -1,7 +1,8 @@
 package com.vokal.codegen.tools;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.tools.JavaFileObject;
 
@@ -17,8 +18,6 @@ public class CodeGenWriter {
     private String        mPackageName;
     private String        mClassName;
     private String        mHelperClassName;
-    private boolean       mContainsByteArray;
-    private boolean       mContainsCharaterArray;
 
     Set<? extends Element> mTableElements = null;
 
@@ -57,14 +56,13 @@ public class CodeGenWriter {
         populateContentValueWithObject(aColumnFields);
         tableCreator(aColumnFields);
         cursorCreator(aColumnFields);
-        if (mContainsByteArray) createByteArrayConverter();
-        if (mContainsCharaterArray) createCharacterArrayConverter();
-
 
         mFileFormatter.addLine("}");
 
         return mFileFormatter.format();
     }
+
+
     private void imports() {
         mFileFormatter.addLine(
                 "// Generated code from CodeGen. Do not modify!",
@@ -117,14 +115,10 @@ public class CodeGenWriter {
         } else if (columnField.getSimpleType().equals("char") ||
                    columnField.getSimpleType().equals("Character")){
             contentString += "(int) " + fieldName;
-        } else if (columnField.getSimpleType().equals("char[]")) {
+        } else if (columnField.getSimpleType().equals("Byte[]") ||
+                   columnField.getSimpleType().equals("char[]") ||
+                   columnField.getSimpleType().equals("Character[]")) {
             contentString += "String.valueOf( " + fieldName + " )";
-        } else if (columnField.getSimpleType().equals("Byte[]")) {
-            mContainsByteArray = true;
-            contentString += "byteArrayToPrim( " + fieldName + " )";
-        } else if (columnField.getSimpleType().equals("Character[]")) {
-            mContainsCharaterArray = true;
-            contentString += "characterArrayToString( " + fieldName + " )";
         } else {
             contentString += fieldName;
         }
@@ -279,29 +273,4 @@ public class CodeGenWriter {
         mFileFormatter.addLine(addColumn + columnConstraints);
 
     }
-
-    private void createCharacterArrayConverter() {
-        mFileFormatter.addLine("",
-                               "public byte[] byteArrayToPrim(Byte[] aByteArray) {",
-                               "int length = aByteArray.length;",
-                               "byte[] b = new byte[length];",
-                               "for (int i = 0; i < length; ++i) {",
-                               "b[i] = aByteArray[i];",
-                               "}",
-                               "return b;",
-                               "}");
-    }
-
-    private void createByteArrayConverter() {
-        mFileFormatter.addLine("",
-                               "public String characterArrayToString(Character[] aCharacterArray) {",
-                               "int length = aCharacterArray.length;",
-                               "char[] c = new char[length];",
-                               "for (int i = 0; i < length; ++i) {",
-                               "c[i] = aCharacterArray[i];",
-                               "}",
-                               "return String.valueOf(c);",
-                               "}");
-    }
-
 }
