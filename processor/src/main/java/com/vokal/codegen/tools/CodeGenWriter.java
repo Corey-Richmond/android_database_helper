@@ -112,17 +112,17 @@ public class CodeGenWriter {
         if (isNotPrimitive)
             ifStatement = "if ( " + fieldName + " != null) ";
 
-        if (columnField.getSimpleType().equals("Date")) {
+        if ("Date".equals(columnField.getSimpleType())) {
             contentString += fieldName + ".getTime()";
-        } else if (columnField.getSimpleType().equals("char") ||
-                   columnField.getSimpleType().equals("Character")){
+        } else if ("char".equals(columnField.getSimpleType()) ||
+                "Character".equals(columnField.getSimpleType())){
             contentString += "(int) " + fieldName;
-        } else if (columnField.getSimpleType().equals("char[]")) {
+        } else if ("char[]".equals(columnField.getSimpleType())) {
             contentString += "String.valueOf( " + fieldName + " )";
-        } else if (columnField.getSimpleType().equals("Byte[]")) {
+        } else if ("Byte[]".equals(columnField.getSimpleType())) {
             mContainsByteArray = true;
             contentString += "byteArrayToPrim( " + fieldName + " )";
-        } else if (columnField.getSimpleType().equals("Character[]")) {
+        } else if ("Character[]".equals(columnField.getSimpleType())) {
             mContainsCharaterArray = true;
             contentString += "characterArrayToString( " + fieldName + " )";
         } else {
@@ -157,22 +157,22 @@ public class CodeGenWriter {
     private void cursorCreatorGetType(ColumnField columnField) {
         String getterType = "";
         String castType = "";
-        if (columnField.getSimpleType().equals("Integer") ||
-            columnField.getSimpleType().equals("char")     ||
-            columnField.getSimpleType().equals("byte") ) {
+        if ("Integer".equals(columnField.getSimpleType()) ||
+            "char".equals(columnField.getSimpleType())    ||
+            "byte".equals(columnField.getSimpleType()) ) {
             getterType = "Int";
             castType = columnField.getSimpleType();
-        } else if (columnField.getSimpleType().equals("Character")||
-                   columnField.getSimpleType().equals("Byte")) {
+        } else if ("Character".equals(columnField.getSimpleType())||
+                "Byte".equals(columnField.getSimpleType())) {
             getterType = "Int";
             castType = columnField.getSimpleType().substring(0, 4).toLowerCase();
-        } else if (columnField.getSimpleType().equals("byte[]")) {
+        } else if ("byte[]".equals(columnField.getSimpleType())) {
             getterType = "Blob";
-        } else if (columnField.getSimpleType().equals("Byte[]") ) {
+        } else if ("Byte[]".equals(columnField.getSimpleType()) ) {
             getterType = "ByteArray";
-        } else if (columnField.getSimpleType().equals("Character[]") ) {
+        } else if ("Character[]".equals(columnField.getSimpleType()) ) {
             getterType = "CharacterArray";
-        } else if (columnField.getSimpleType().equals("char[]")) {
+        } else if ("char[]".equals(columnField.getSimpleType())) {
             getterType = "CharArray";
         } else {
             getterType = firstLetterToUpper(columnField.getSimpleType());
@@ -210,7 +210,7 @@ public class CodeGenWriter {
     private void addTableConstraints() {
         if(mTableElements != null) {
             for (Element e : mTableElements) {
-                if(e.getSimpleName().toString().equals(mClassName)) {
+                if(mClassName.equals(e.getSimpleName().toString())) {
                     addTableConstraints("primaryKey", e.getAnnotation(Table.class).primaryKeys());
                     addTableConstraints("unique", e.getAnnotation(Table.class).uniqueColumns());
 
@@ -238,29 +238,29 @@ public class CodeGenWriter {
 
     private void tableBuilder(ColumnField columnField) {
         String addColumn;
-        if (columnField.getSimpleType().equals("boolean")   ||
-            columnField.getSimpleType().equals("Boolean")   ||
-            columnField.getSimpleType().equals("int")       ||
-            columnField.getSimpleType().equals("long")      ||
-            columnField.getSimpleType().equals("Long")      ||
-            columnField.getSimpleType().equals("char")      ||
-            columnField.getSimpleType().equals("Character") ||
-            columnField.getSimpleType().equals("byte")      ||
-            columnField.getSimpleType().equals("Byte")      ||
-            columnField.getSimpleType().equals("short")     ||
-            columnField.getSimpleType().equals("Short")     ||
-            columnField.getSimpleType().equals("Date")) {
+        if ("boolean".equals(columnField.getSimpleType())   ||
+            "Boolean".equals(columnField.getSimpleType())   ||
+            "int".equals(columnField.getSimpleType())       ||
+            "long".equals(columnField.getSimpleType())      ||
+            "Long".equals(columnField.getSimpleType())      ||
+            "char".equals(columnField.getSimpleType())      ||
+            "Character".equals(columnField.getSimpleType()) ||
+            "byte".equals(columnField.getSimpleType())      ||
+            "Byte".equals(columnField.getSimpleType())      ||
+            "short".equals(columnField.getSimpleType())     ||
+            "Short".equals(columnField.getSimpleType())     ||
+            "Date".equals(columnField.getSimpleType())) {
             addColumn = ".addIntegerColumn(" + columnField.getName().toUpperCase() + ")";
-        } else if (columnField.getSimpleType().equals("double") ||
-                   columnField.getSimpleType().equals("Double") ||
-                   columnField.getSimpleType().equals("float")  ||
-                   columnField.getSimpleType().equals("Float")) {
+        } else if ("double".equals(columnField.getSimpleType()) ||
+                   "Double".equals(columnField.getSimpleType()) ||
+                   "float".equals(columnField.getSimpleType())  ||
+                   "Float".equals(columnField.getSimpleType())) {
             addColumn = ".addRealColumn(" + columnField.getName().toUpperCase() + ")";
-        } else if (columnField.getSimpleType().equals("byte[]")  ||
-                   columnField.getSimpleType().equals("Byte[]")) {
+        } else if ("byte[]".equals(columnField.getSimpleType())  ||
+                   "Byte[]".equals(columnField.getSimpleType())) {
             addColumn = ".addBlobColumn(" + columnField.getName().toUpperCase() + ")";
-        } else if (columnField.getSimpleType().equals("char[]") ||
-                columnField.getSimpleType().equals("Character[]")) {
+        } else if ("char[]".equals(columnField.getSimpleType()) ||
+                   "Character[]".equals(columnField.getSimpleType())) {
             addColumn = ".addStringColumn(" + columnField.getName().toUpperCase() + ")";
         } else {
             addColumn = ".add" + firstLetterToUpper(
@@ -277,9 +277,9 @@ public class CodeGenWriter {
         if (columnField.mIsUnique)
             columnConstraints +=  ".unique()" ;
         if (!"".equals(columnField.mDefaultValue)) {
-            if (columnField.getSimpleType().equals("String"))
+            if ("String".equals(columnField.getSimpleType()))
                 columnConstraints += ".defaultValue(\"" + columnField.mDefaultValue + "\")";
-            else
+            else if (!"String".equals(columnField.getSimpleType()))
                 columnConstraints += ".defaultValue(" + columnField.mDefaultValue + ")";
         }
         mFileFormatter.addLine(addColumn + columnConstraints);
