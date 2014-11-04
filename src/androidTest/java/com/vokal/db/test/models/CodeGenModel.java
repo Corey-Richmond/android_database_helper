@@ -17,7 +17,7 @@ import static com.vokal.codegen.Column.Constraint.unique;
 public class CodeGenModel extends DataModel {
 
     /* Primitives */
-    public @Column                                           byte    byte_prim;
+    public @Column(constraint = notNull, defaultValue = "1") byte    byte_prim;
     public @Column(constraint = notNull, defaultValue = "1") short   short_prim;
     public @Column(constraint = autoincrement)               int     int_prim;
     public @Column                                           long    long_prim;

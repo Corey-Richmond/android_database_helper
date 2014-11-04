@@ -27,34 +27,6 @@ public class CodeGenTests extends ProviderTestCase2<SimpleContentProvider> {
         DatabaseHelper.registerModel(mContext, CodeGenModel.class);
     }
 
-    public byte[] setbyteArray(byte[] aArray, int aLength) {
-        for (byte i = 0; i < aLength; i++) {
-            aArray[i] = i;
-        }
-        return aArray;
-    }
-
-    public Byte[] setByteArray(Byte[] aArray, int aLength) {
-        for (Byte i = 0; i < aLength; i++) {
-            aArray[i] = i;
-        }
-        return aArray;
-    }
-
-    public char[] setCharArray(char[] aArray, int aLength) {
-        for (char i = 0; i < aLength; i++) {
-            aArray[i] = i;
-        }
-        return aArray;
-    }
-
-    public Character[] setCharacterArray(Character[] aArray, int aLength) {
-        for (Character i = 0; i < aLength; i++) {
-            aArray[i] = i;
-        }
-        return aArray;
-    }
-
     public void testInsert() {
         CodeGenModel model = new CodeGenModel();
         model.byte_prim = 0;
@@ -114,8 +86,6 @@ public class CodeGenTests extends ProviderTestCase2<SimpleContentProvider> {
             assertEquals('B', (char) m.character_object);
             assertEquals(new Date(1415116088347l).getTime(), m.date_object.getTime());
 
-
-
             assertArrayEquals(setbyteArray(new byte[3], 3), m.byte_prim_array);
             assertArrayEquals(setByteArray(new Byte[3], 3), m.byte_array);
             assertArrayEquals(setCharArray(new char[3], 3), m.char_prim_array);
@@ -123,6 +93,34 @@ public class CodeGenTests extends ProviderTestCase2<SimpleContentProvider> {
         } else {
             assertFalse("cursor empty", true);
         }
+    }
+
+    public byte[] setbyteArray(byte[] aArray, int aLength) {
+        for (byte i = 0; i < aLength; i++) {
+            aArray[i] = i;
+        }
+        return aArray;
+    }
+
+    public Byte[] setByteArray(Byte[] aArray, int aLength) {
+        for (Byte i = 0; i < aLength; i++) {
+            aArray[i] = i;
+        }
+        return aArray;
+    }
+
+    public char[] setCharArray(char[] aArray, int aLength) {
+        for (char i = 0; i < aLength; i++) {
+            aArray[i] = i;
+        }
+        return aArray;
+    }
+
+    public Character[] setCharacterArray(Character[] aArray, int aLength) {
+        for (Character i = 0; i < aLength; i++) {
+            aArray[i] = i;
+        }
+        return aArray;
     }
 
     private void assertArrayEquals(char[] aExpectedArray, char[] aActualArray) {
