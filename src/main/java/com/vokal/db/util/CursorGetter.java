@@ -80,6 +80,26 @@ public class CursorGetter {
         return mCursor.getBlob(getColumnIndex(aColumn));
     }
 
+    public Byte[] getByteArray(String aColumn) {
+        byte[] b = mCursor.getBlob(getColumnIndex(aColumn));
+        Byte[] B = new Byte[b.length];
+        for (int i = 0; i < b.length; i++)
+            B[i] = b[i];
+        return B;
+    }
+
+    public char[] getCharArray(String aColumn) {
+        return mCursor.getString(getColumnIndex(aColumn)).toCharArray();
+    }
+
+    public Character[] getCharacterArray(String aColumn) {
+        char[] c = mCursor.getString(getColumnIndex(aColumn)).toCharArray();
+        Character[] C = new Character[c.length];
+        for (int i = 0; i < c.length; i++)
+            C[i] = c[i];
+        return C;
+    }
+
     public Date getDate(String aColumn) {
         int i = getColumnIndex(aColumn);
         if (i >= 0 && !mCursor.isNull(i)) {

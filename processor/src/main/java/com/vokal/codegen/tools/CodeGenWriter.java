@@ -89,10 +89,11 @@ public class CodeGenWriter {
     }
 
     private void populateContentValueWithObject(Collection<ColumnField> columnFields) {
+        String className = mClassName.replace('$', '.');
         mFileFormatter.addLine("",
                                "@Override",
                                "public void populateContentValues(ContentValues aValues, Object aObject) {",
-                               mClassName.replace('$', '.') + " model = ((" + mClassName.replace('$', '.') + ") aObject);",
+                               className + " model = ((" + className + ") aObject);",
                                "if (model.hasId()) {","aValues.put(_ID, model.getId());","}");
         for (ColumnField columnField : columnFields) {
             addContent(columnField);
@@ -101,14 +102,32 @@ public class CodeGenWriter {
     }
 
     private void addContent(ColumnField columnField) {
-        if (columnField.getSimpleType().equals("Date"))
-            mFileFormatter.addLine(
-                    "if ( model."+ columnField.getName() + " != null) " +
-                    "aValues.put(" + columnField.getName().toUpperCase() +
-                            ", model." + columnField.getName() + ".getTime());");
+        boolean isNotPrimitive = columnField.getType().contains(".");
+
+        String ifStatement = "";
+        String contentString = "aValues.put(" + columnField.getName().toUpperCase() + ", ";
+        String fieldName = "model."+ columnField.getName();
+        if (isNotPrimitive)
+            ifStatement = "if ( " + fieldName + " != null) ";
+
+        if (columnField.getSimpleType().equals("Date")) {
+            contentString += fieldName + ".getTime()";
+        } else if (columnField.getSimpleType().equals("char") ||
+                   columnField.getSimpleType().equals("Character")){
+            contentString += "(int) " + fieldName;
+        } else if (columnField.getSimpleType().equals("Byte[]") ||
+                   columnField.getSimpleType().equals("char[]") ||
+                   columnField.getSimpleType().equals("Character[]")) {
+            contentString += "String.valueOf( " + fieldName + " )";
+        } else {
+            contentString += fieldName;
+        }
+
+        contentString += ");";
+        if ("".equals(ifStatement))
+            mFileFormatter.addLine(contentString);
         else
-            mFileFormatter.addLine(
-                    "aValues.put(" + columnField.getName().toUpperCase() + ", model." + columnField.getName() + ");");
+        mFileFormatter.addLine(ifStatement, contentString);
     }
 
     private void cursorCreator(Collection<ColumnField> columnFields) {
@@ -131,14 +150,38 @@ public class CodeGenWriter {
 
     private void cursorCreatorGetType(ColumnField columnField) {
         String getterType = "";
-        if (columnField.getSimpleType().equals("Integer")) {
+        String castType = "";
+        if (columnField.getSimpleType().equals("Integer") ||
+            columnField.getSimpleType().equals("char")     ||
+            columnField.getSimpleType().equals("byte") ) {
             getterType = "Int";
+            castType = columnField.getSimpleType();
+        } else if (columnField.getSimpleType().equals("Character")||
+                   columnField.getSimpleType().equals("Byte")) {
+            getterType = "Int";
+            castType = columnField.getSimpleType().substring(0, 4).toLowerCase();
+        } else if (columnField.getSimpleType().equals("byte[]")) {
+            getterType = "Blob";
+        } else if (columnField.getSimpleType().equals("Byte[]") ) {
+            getterType = "ByteArray";
+        } else if (columnField.getSimpleType().equals("Character[]") ) {
+            getterType = "CharacterArray";
+        } else if (columnField.getSimpleType().equals("char[]")) {
+            getterType = "CharArray";
         } else {
             getterType = firstLetterToUpper(columnField.getSimpleType());
+
         }
-        mFileFormatter.addLine(
-                "model." + columnField.getName() + " = getter.get" + getterType +
-                        "(" + columnField.getName().toUpperCase() + ");");
+
+        if ("".equals(castType)) {
+            mFileFormatter.addLine(
+                    "model." + columnField.getName() + " = getter.get" + getterType +
+                            "(" + columnField.getName().toUpperCase() + ");");
+        } else {
+            mFileFormatter.addLine(
+                    "model." + columnField.getName() + " = (" + castType + ") getter.get" + getterType +
+                            "(" + columnField.getName().toUpperCase() + ");");
+        }
     }
 
     protected void tableCreator(Collection<ColumnField> columnFields) {
@@ -189,18 +232,30 @@ public class CodeGenWriter {
 
     private void tableBuilder(ColumnField columnField) {
         String addColumn;
-        if (columnField.getSimpleType().equals("boolean") ||
-            columnField.getSimpleType().equals("Boolean") ||
-            columnField.getSimpleType().equals("int")     ||
-            columnField.getSimpleType().equals("long")    ||
-            columnField.getSimpleType().equals("Long")    ||
+        if (columnField.getSimpleType().equals("boolean")   ||
+            columnField.getSimpleType().equals("Boolean")   ||
+            columnField.getSimpleType().equals("int")       ||
+            columnField.getSimpleType().equals("long")      ||
+            columnField.getSimpleType().equals("Long")      ||
+            columnField.getSimpleType().equals("char")      ||
+            columnField.getSimpleType().equals("Character") ||
+            columnField.getSimpleType().equals("byte")      ||
+            columnField.getSimpleType().equals("Byte")      ||
+            columnField.getSimpleType().equals("short")     ||
+            columnField.getSimpleType().equals("Short")     ||
             columnField.getSimpleType().equals("Date")) {
-            addColumn = ".add" + "IntegerColumn(" + columnField.getName().toUpperCase() + ")";
+            addColumn = ".addIntegerColumn(" + columnField.getName().toUpperCase() + ")";
         } else if (columnField.getSimpleType().equals("double") ||
                    columnField.getSimpleType().equals("Double") ||
                    columnField.getSimpleType().equals("float")  ||
                    columnField.getSimpleType().equals("Float")) {
-            addColumn = ".add" + "RealColumn(" + columnField.getName().toUpperCase() + ")";
+            addColumn = ".addRealColumn(" + columnField.getName().toUpperCase() + ")";
+        } else if (columnField.getSimpleType().equals("byte[]")  ||
+                   columnField.getSimpleType().equals("Byte[]")) {
+            addColumn = ".addBlobColumn(" + columnField.getName().toUpperCase() + ")";
+        } else if (columnField.getSimpleType().equals("char[]") ||
+                columnField.getSimpleType().equals("Character[]")) {
+            addColumn = ".addStringColumn(" + columnField.getName().toUpperCase() + ")";
         } else {
             addColumn = ".add" + firstLetterToUpper(
                     columnField.getSimpleType()) + "Column(" + columnField.getName().toUpperCase() + ")";

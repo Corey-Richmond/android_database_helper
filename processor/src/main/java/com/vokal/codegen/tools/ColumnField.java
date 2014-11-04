@@ -52,6 +52,10 @@ public class ColumnField {
         return mName;
     }
 
+    public String getType() {
+        return mType.toString();
+    }
+
     public String getSimpleType() {
         return mType.toString().substring(mType.toString().lastIndexOf('.') + 1);
     }
