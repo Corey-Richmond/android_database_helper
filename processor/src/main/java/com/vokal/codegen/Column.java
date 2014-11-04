@@ -6,6 +6,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.SOURCE)
 public @interface Column {
     public Constraint[] constraint() default Constraint.none;
+    public String defaultValue() default "";
 
     public enum Constraint {
         none,

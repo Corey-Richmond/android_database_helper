@@ -15,21 +15,25 @@ public class ColumnField {
     public        boolean     mIsNotNull;
     public        boolean     mIsUnique;
     public        boolean     mIsAutoIncrement;
+    public        String      mDefaultValue;
 
     ColumnField(Element aElement) {
         this(aElement.getSimpleName().toString(),
              aElement.asType(),
              (TypeElement) aElement.getEnclosingElement(),
-             aElement.getAnnotation(Column.class).constraint());
+             aElement.getAnnotation(Column.class).constraint(),
+             aElement.getAnnotation(Column.class).defaultValue());
     }
 
     ColumnField(String aName,
                 TypeMirror aType,
                 TypeElement aEnclosingClassType,
-                Column.Constraint[] aConstraints) {
+                Column.Constraint[] aConstraints,
+                String aDefaultValue) {
         mName = aName;
         mType = aType;
         mEnclosingClassType = aEnclosingClassType;
+        mDefaultValue = aDefaultValue;
         for (Column.Constraint constraint : aConstraints) {
             switch (constraint) {
                 case primaryKey:

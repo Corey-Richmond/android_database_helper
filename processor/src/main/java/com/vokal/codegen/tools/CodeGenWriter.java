@@ -96,7 +96,7 @@ public class CodeGenWriter {
                                "@Override",
                                "public void populateContentValues(ContentValues aValues, Object aObject) {",
                                className + " model = ((" + className + ") aObject);",
-                               "if (model.hasId()) {","aValues.put(_ID, model.getId());","}");
+                               "if (model.hasId())","aValues.put(_ID, model.getId());");
         for (ColumnField columnField : columnFields) {
             addContent(columnField);
         }
@@ -276,6 +276,12 @@ public class CodeGenWriter {
             columnConstraints +=  ".notNull()" ;
         if (columnField.mIsUnique)
             columnConstraints +=  ".unique()" ;
+        if (!"".equals(columnField.mDefaultValue)) {
+            if (columnField.getSimpleType().equals("String"))
+                columnConstraints += ".defaultValue(\"" + columnField.mDefaultValue + "\")";
+            else
+                columnConstraints += ".defaultValue(" + columnField.mDefaultValue + ")";
+        }
         mFileFormatter.addLine(addColumn + columnConstraints);
 
     }
