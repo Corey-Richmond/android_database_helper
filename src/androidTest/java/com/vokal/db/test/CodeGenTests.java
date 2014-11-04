@@ -114,6 +114,8 @@ public class CodeGenTests extends ProviderTestCase2<SimpleContentProvider> {
             assertEquals('B', (char) m.character_object);
             assertEquals(new Date(1415116088347l).getTime(), m.date_object.getTime());
 
+
+
             assertArrayEquals(setbyteArray(new byte[3], 3), m.byte_prim_array);
             assertArrayEquals(setByteArray(new Byte[3], 3), m.byte_array);
             assertArrayEquals(setCharArray(new char[3], 3), m.char_prim_array);
