@@ -17,6 +17,7 @@ package com.vokal.db.util;
 
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.util.SparseArray;
 
 import java.lang.reflect.Field;
@@ -64,19 +65,19 @@ public class ObjectCursor<T> extends CursorWrapper {
             Field f = aModelClass.getField("CURSOR_CREATOR");
             creator = (CursorCreator) f.get(null);
         } catch (ClassCastException e) {
-            throw new IllegalStateException("ADHD protocol requires the object called TABLE_CREATOR " +
-                                                    "on class " + className + " to be a SQLiteTable.TableCreator");
+            throw new IllegalStateException("ObjectCursor requires the object called CURSOR_CREATOR " +
+                                                    "on class " + className + " to be a CursorCreator");
         } catch (NoSuchFieldException e) {
             creator = getCursorCreatorFromHelper(aModelClass);
             if (creator == null) {
-                throw new IllegalStateException("ADHD protocol requires a SQLiteTable.TableCreator " +
-                                                        "object called TABLE_CREATOR on class " + className);
+                throw new IllegalStateException("ObjectCursor requires a CursorCreator " +
+                                                        "object called CURSOR_CREATOR on class " + className);
             }
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("ADHD protocol requires the TABLE_CREATOR object " +
+            throw new IllegalStateException("ObjectCursor requires the CURSOR_CREATOR object " +
                                                     "to be accessible on class " + className);
         } catch (NullPointerException e) {
-            throw new IllegalStateException("ADHD protocol requires the TABLE_CREATOR " +
+            throw new IllegalStateException("ObjectCursor requires the CURSOR_CREATOR " +
                                                     "object to be static on class " + className);
         }
         return creator;
@@ -126,6 +127,7 @@ public class ObjectCursor<T> extends CursorWrapper {
             return prev;
         }
 
+        String s = DatabaseUtils.dumpCursorToString(c);
         mGetter.swapCursor(c, false);
         // Get the object at the current position and add it to the cache.
         final T model = mFactory.createFromCursorGetter(mGetter);

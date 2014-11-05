@@ -2,12 +2,8 @@ package com.vokal.db;
 
 import android.content.*;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.provider.BaseColumns;
-import android.util.Log;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 
 import com.vokal.db.util.CursorGetter;

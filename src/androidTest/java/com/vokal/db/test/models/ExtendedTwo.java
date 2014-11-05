@@ -53,11 +53,11 @@ public class ExtendedTwo extends DataModel implements Parcelable {
         dest.writeDouble(double1);
     }
 
-    public long getId() {
-        return _id;
-    }
-
-    public void setId(long id) {
-        this._id = id;
-    }
+//    public long getId() {
+//        return _id;
+//    }
+//
+//    public void setId(long id) {
+//        this._id = id;
+//    }
 }

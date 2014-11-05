@@ -231,46 +231,46 @@ public class AbstractDataModelTests extends ProviderTestCase2<SimpleContentProvi
         assertEquals(cursor2.getModel().double1, 3.4);
     }
 
-    public void testParcelable() {
-        //Create parcelable object and put to Bundle
-
-        final long id = 123L;
-
-        ExtendedTwo extendedTwo = new ExtendedTwo();
-        extendedTwo.setId(id);
-        extendedTwo.string1 = "parcelled";
-        extendedTwo.boolean1 = true;
-        extendedTwo.int1 = 12;
-        extendedTwo.long1 = 555444333;
-        extendedTwo.float1 = 123.456f;
-        extendedTwo.double1 = 3.4;
-        extendedTwo.date1 = new Date();
-
-        extendedTwo.save(mContext);
-        assertEquals(extendedTwo.int1, 12);
-        Bundle b = new Bundle();
-        b.putParcelable("e2", extendedTwo);
-
-        //Save bundle to parcel
-        Parcel parcel = Parcel.obtain();
-        b.writeToParcel(parcel, 0);
-
-        //Extract bundle from parcel
-        parcel.setDataPosition(0);
-        Bundle b2 = parcel.readBundle();
-        b2.setClassLoader(ExtendedTwo.class.getClassLoader());
-        ExtendedTwo e2 = b2.getParcelable("e2");
-
-        //Check that objects are not same and test that objects are equal
-        assertFalse("Bundle is the same", b2 == b);
-        assertFalse("model is the same", e2 == extendedTwo);
-        assertEquals(id, e2.getId());
-        assertEquals("parcelled", e2.string1);
-        assertTrue(e2.boolean1);
-        assertEquals(extendedTwo.int1, e2.int1);
-        assertEquals(extendedTwo.long1, e2.long1);
-        assertEquals(extendedTwo.float1, e2.float1);
-        assertEquals(extendedTwo.double1, e2.double1);
-        assertEquals(extendedTwo.date1, e2.date1);
-    }
+//    public void testParcelable() {
+//        //Create parcelable object and put to Bundle
+//
+//        final long id = 123L;
+//
+//        ExtendedTwo extendedTwo = new ExtendedTwo();
+//        extendedTwo.setId(id);
+//        extendedTwo.string1 = "parcelled";
+//        extendedTwo.boolean1 = true;
+//        extendedTwo.int1 = 12;
+//        extendedTwo.long1 = 555444333;
+//        extendedTwo.float1 = 123.456f;
+//        extendedTwo.double1 = 3.4;
+//        extendedTwo.date1 = new Date();
+//
+//        extendedTwo.save(mContext);
+//        assertEquals(extendedTwo.int1, 12);
+//        Bundle b = new Bundle();
+//        b.putParcelable("e2", extendedTwo);
+//
+//        //Save bundle to parcel
+//        Parcel parcel = Parcel.obtain();
+//        b.writeToParcel(parcel, 0);
+//
+//        //Extract bundle from parcel
+//        parcel.setDataPosition(0);
+//        Bundle b2 = parcel.readBundle();
+//        b2.setClassLoader(ExtendedTwo.class.getClassLoader());
+//        ExtendedTwo e2 = b2.getParcelable("e2");
+//
+//        //Check that objects are not same and test that objects are equal
+//        assertFalse("Bundle is the same", b2 == b);
+//        assertFalse("model is the same", e2 == extendedTwo);
+//        assertEquals(id, e2.getId());
+//        assertEquals("parcelled", e2.string1);
+//        assertTrue(e2.boolean1);
+//        assertEquals(extendedTwo.int1, e2.int1);
+//        assertEquals(extendedTwo.long1, e2.long1);
+//        assertEquals(extendedTwo.float1, e2.float1);
+//        assertEquals(extendedTwo.double1, e2.double1);
+//        assertEquals(extendedTwo.date1, e2.date1);
+//    }
 }
