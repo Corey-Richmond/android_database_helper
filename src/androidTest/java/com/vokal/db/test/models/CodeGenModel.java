@@ -3,28 +3,24 @@ package com.vokal.db.test.models;
 import java.util.Date;
 
 import com.vokal.codegen.*;
-import com.vokal.db.SQLiteTable;
 import com.vokal.db.codegen.DataModel;
 
-import static com.vokal.codegen.Column.Constraint.autoincrement;
 import static com.vokal.codegen.Column.Constraint.notNull;
-import static com.vokal.codegen.Column.Constraint.primaryKey;
 import static com.vokal.codegen.Column.Constraint.unique;
 
-@Table(primaryKeys = {"byte_prim", "string_object", "date_object"},
-       uniqueColumns = {"long_prim", "char_prim"},
+@Table(uniqueColumns = {"long_prim", "char_prim"},
        indexColumns = {@Names({"byte_prim", "boolean_object"})})
 public class CodeGenModel extends DataModel {
 
     /* Primitives */
-    public @Column                             byte    byte_prim;
-    public @Column                             short   short_prim;
-    public @Column(constraint = autoincrement) int     int_prim;
-    public @Column                             long    long_prim;
-    public @Column                             float   float_prim;
-    public @Column                             double  double_prim;
-    public @Column                             boolean boolean_prim;
-    public @Column                             char    char_prim;
+    public @Column byte    byte_prim;
+    public @Column short   short_prim;
+    public @Column int     int_prim;
+    public @Column long    long_prim;
+    public @Column float   float_prim;
+    public @Column double  double_prim;
+    public @Column boolean boolean_prim;
+    public @Column char    char_prim;
 
     /* Arrays */
     public @Column byte[]      byte_prim_array;

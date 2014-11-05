@@ -10,8 +10,6 @@ public @interface Column {
 
     public enum Constraint {
         none,
-        primaryKey,
-        autoincrement,
         notNull,
         unique
     }

@@ -1,7 +1,8 @@
 package com.vokal.codegen.tools;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.tools.JavaFileObject;
 
@@ -210,7 +211,6 @@ public class CodeGenWriter {
         if(mTableElements != null) {
             for (Element e : mTableElements) {
                 if(mClassName.equals(e.getSimpleName().toString())) {
-                    addTableConstraints("primaryKey", e.getAnnotation(Table.class).primaryKeys());
                     addTableConstraints("unique", e.getAnnotation(Table.class).uniqueColumns());
 
                     int indexLength = e.getAnnotation(Table.class).indexColumns().length;
@@ -267,10 +267,6 @@ public class CodeGenWriter {
         }
 
         String columnConstraints = "";
-        if (columnField.mIsPrimaryKey)
-            columnConstraints +=  ".primaryKey()" ;
-        if (columnField.mIsAutoIncrement)
-            columnConstraints +=  ".autoincrement()" ;
         if (columnField.mIsNotNull)
             columnConstraints +=  ".notNull()" ;
         if (columnField.mIsUnique)

@@ -11,10 +11,8 @@ public class ColumnField {
     private final String      mName;
     private final TypeMirror  mType;
     private final TypeElement mEnclosingClassType;
-    public        boolean     mIsPrimaryKey;
     public        boolean     mIsNotNull;
     public        boolean     mIsUnique;
-    public        boolean     mIsAutoIncrement;
     public        String      mDefaultValue;
 
     ColumnField(Element aElement) {
@@ -36,12 +34,6 @@ public class ColumnField {
         mDefaultValue = aDefaultValue;
         for (Column.Constraint constraint : aConstraints) {
             switch (constraint) {
-                case primaryKey:
-                    mIsPrimaryKey = true;
-                    break;
-                case autoincrement:
-                    mIsAutoIncrement = true;
-                    break;
                 case notNull:
                     mIsNotNull = true;
                     break;

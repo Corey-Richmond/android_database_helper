@@ -11,8 +11,6 @@ import com.vokal.db.codegen.DataModel;
 
 import static com.vokal.codegen.Column.Constraint.unique;
 
-@Table(indexColumns = @Names("date1"),
-       primaryKeys = {"date1"})
 public class ExtendedTwo extends DataModel implements Parcelable {
 
     public @Column(constraint = unique) int     int1;
