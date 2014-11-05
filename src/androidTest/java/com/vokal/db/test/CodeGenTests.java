@@ -128,15 +128,8 @@ public class CodeGenTests extends ProviderTestCase2<SimpleContentProvider> {
         setCharacterArray(model.character_array, 3);
         Uri uri = model.save(mContext);
         assertNotNull(uri);
-        Cursor c = getMockContentResolver().query(DatabaseHelper.getContentUri(CodeGenModel.class), null, null, null,
-                                                  null);
-        String s = DatabaseUtils.dumpCursorToString(c);
-        ObjectCursor<CodeGenModel> cursor = new ObjectCursor<>(c, CodeGenModel.class);
-        assertTrue(cursor.moveToFirst());
-        CodeGenModel m = cursor.getModel();
-        assertEquals(m.getId(), 1);
-//        boolean success = model.delete(mContext);
-//        assertTrue(success);
+        boolean success = model.delete(mContext);
+        assertTrue(success);
     }
 
     public byte[] setbyteArray(byte[] aArray, int aLength) {
