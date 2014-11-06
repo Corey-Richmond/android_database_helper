@@ -104,7 +104,7 @@ public class CodeGenWriter {
     }
 
     private void addContent(ColumnField columnField) {
-        boolean isNotPrimitive = columnField.getType().contains(".");
+        boolean isNotPrimitive = columnField.getType().contains(".") || columnField.getType().contains("[]");
 
         String ifStatement = "";
         String contentString = "aValues.put(" + columnField.getName().toUpperCase() + ", ";

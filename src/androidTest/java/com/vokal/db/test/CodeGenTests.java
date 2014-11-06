@@ -105,27 +105,7 @@ public class CodeGenTests extends ProviderTestCase2<SimpleContentProvider> {
         model.long_prim = 3l;
         model.float_prim = 4.1f;
         model.double_prim = 5.1d;
-        model.boolean_prim = true;
-        model.char_prim = 'a';
-        model.string_object = "String_Test";
-        model.byte_object = 6;
-        model.short_object = 7;
-        model.integer_object = 8;
-        model.long_object = 9L;
-        model.float_object = 10.1F;
-        model.double_object = 11.2D;
-        model.boolean_object = true;
-        model.character_object = 'B';
-        model.date_object = new Date(1415116088347l);
 
-        model.byte_prim_array = new byte[3];
-        setbyteArray(model.byte_prim_array, 3);
-        model.byte_array = new Byte[3];
-        setByteArray(model.byte_array, 3);
-        model.char_prim_array = new char[3];
-        setCharArray(model.char_prim_array, 3);
-        model.character_array = new Character[3];
-        setCharacterArray(model.character_array, 3);
         Uri uri = model.save(mContext);
         assertNotNull(uri);
         boolean success = model.delete(mContext);
