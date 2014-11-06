@@ -42,12 +42,25 @@ public class ModelProcessor extends AbstractProcessor {
 
     private void write(Map<EnclosingClass, Collection<ColumnField>> columnFieldsByEnclosingClass,
                        Set<? extends Element> mTableElements) {
+
+        Set<EnclosingClass> enclosingClasses = columnFieldsByEnclosingClass.keySet();
+
         WriterFactory writerFactory = new WriterFactory(filer(), SUFFIX);
-        for (EnclosingClass enclosingClass : columnFieldsByEnclosingClass.keySet()) {
+        try {
+            writerFactory.writeRegistrationClass(enclosingClasses)
+                    .withClasses(enclosingClasses)
+                    .write();
+        } catch (IOException e) {
+            messager().printMessage(Diagnostic.Kind.ERROR,
+                                    "Error generating registration helper class. Reason: " + e.getMessage());
+        }
+
+        for (EnclosingClass enclosingClass : enclosingClasses) {
             try {
-                writerFactory.writeClass(enclosingClass)
+                writerFactory.writeModelClass(enclosingClass)
                         .withTableElements(mTableElements)
-                        .withFields(columnFieldsByEnclosingClass.get(enclosingClass));
+                        .withFields(columnFieldsByEnclosingClass.get(enclosingClass))
+                        .write();
             } catch (IOException e) {
                 messager().printMessage(Diagnostic.Kind.ERROR,
                                         "Error generating helper for class " + enclosingClass.getClassName()

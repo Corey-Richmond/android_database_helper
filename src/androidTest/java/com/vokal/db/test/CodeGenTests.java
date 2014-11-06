@@ -25,7 +25,7 @@ public class CodeGenTests extends ProviderTestCase2<SimpleContentProvider> {
     protected void setUp() throws Exception {
         super.setUp();
         mContext = getMockContext();
-        DatabaseHelper.registerModel(mContext, CodeGenModel.class);
+        DatabaseHelper.registerModel(mContext, RegisterTablesHelper.getTables());
         DatabaseHelper.wipeDatabase(mContext);
     }
 
