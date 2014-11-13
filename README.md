@@ -34,10 +34,11 @@ Add optional metadata for name and version to provider:
 
 There are several ways to create a data model class:
 
- - extending `AbstractDataModel` is the quickest as it provides convenience methods (ie. save(), delete()), and it's a Parcelable object (see below)
+ - extending `AbstractDataModel` is the quickest as it provides convenience methods, ie. save(), delete() (see below)
+ - extending `DataModel` which is an extention of AbstractDataModel. This option will do even more boilerplate code with code generation. (see [`DataModel`](COMPILER_README.md) with for more info) 
  - implementing `DataModelInterface` gives you the easy table setup methods and the populateContentValues() method.  DatabaseHelper has static methods for save/update and bulk insert, but you will have to handle deletes manually.
  - adding a `TableCreator TABLE_CREATOR` constant to your model class if you cannot do either of the above.  Tables will be created/upgraded, but you will have to handle all other operations manually.
-  		      
+ 		      
 Register your model with DatabaseHelper and save your new content Uri:
 
 	public class MyApp extends Application {
@@ -48,6 +49,11 @@ Register your model with DatabaseHelper and save your new content Uri:
 
 		DatabaseHelper.registerModel(this, User.class, MyModel.class);
 		DatabaseHelper.registerModel(this, SomeModel.class, "some_table_name")
+		
+		/* If using DataModel to extend models you can use
+		 * the code gererated helper here 
+		 */
+		DatabaseHelper.registerModel(this, RegisterTablesHelper.getTables())
 		
 	}
 
@@ -275,6 +281,5 @@ Call column constraints immediately after adding a column.  Table constraints an
 ####Extras:
 	seed(ContentValues...)
 	recreate() // for drop table and recreate using Builder
-	
 
 	
