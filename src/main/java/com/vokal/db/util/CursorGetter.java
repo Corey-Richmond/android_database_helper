@@ -82,6 +82,7 @@ public class CursorGetter {
 
     public Byte[] getByteArray(String aColumn) {
         byte[] b = mCursor.getBlob(getColumnIndex(aColumn));
+        if (b == null) return null;
         Byte[] B = new Byte[b.length];
         for (int i = 0; i < b.length; i++)
             B[i] = b[i];
@@ -89,11 +90,15 @@ public class CursorGetter {
     }
 
     public char[] getCharArray(String aColumn) {
-        return mCursor.getString(getColumnIndex(aColumn)).toCharArray();
+        String charString = mCursor.getString(getColumnIndex(aColumn));
+        if (charString == null) return null;
+        return charString.toCharArray();
     }
 
     public Character[] getCharacterArray(String aColumn) {
-        char[] c = mCursor.getString(getColumnIndex(aColumn)).toCharArray();
+        String charString = mCursor.getString(getColumnIndex(aColumn));
+        if (charString == null) return null;
+        char[] c = charString.toCharArray();
         Character[] C = new Character[c.length];
         for (int i = 0; i < c.length; i++)
             C[i] = c[i];
